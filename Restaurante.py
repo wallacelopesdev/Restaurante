@@ -182,6 +182,8 @@ print("\nMétodos de pagamento disponíveis:")
 metodoDePagamento = ["1. Dinheiro", "2. Cartão de Crédito", "3. Cartão de Débito", "4. Pix"]
 print('\n'.join(metodoDePagamento))
 
+print(Fore.GREEN + f"\nTotal final a pagar: R$ {total:.2f}")
+
 metodo_pagamento = input("\nEscolha o método de pagamento (1, 2, 3 ou 4): ").strip()
 if metodo_pagamento == '1':
     print("Você escolheu pagar em Dinheiro.")
@@ -199,6 +201,6 @@ else:
 # ==============================
 salvar_historico(cliente, telefone, pedido, total, "Entrega" if entrega == "2" else "Retirada", endereco)
 
-print(Fore.GREEN + f"\nTotal final a pagar: R$ {total:.2f}")
+
 print(Fore.CYAN + "\nUm garçom estará com você em breve para finalizar o pagamento.")
 print(Fore.CYAN + "\nObrigado por visitar o Sabor Brasileiro! Volte sempre!")
