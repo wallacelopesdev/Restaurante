@@ -1,4 +1,25 @@
+import os
+
+
+
+
+
+
+
 NomeDoRestaurante = "Sabor Brasileiro" 
+
+
+acesso = input("Você deseja acessar o aplicativo de pedidos do restaurante? (s/n): ").strip().lower()
+if acesso != 's':
+    print("Obrigado! Volte sempre.")
+    exit()
+else:
+    os.system('cls')
+
+
+
+
+
 # Produtos 
 produtos = { 1: {"nome": "Feijoada 500g", "preco": 25.00}, 
             2: {"nome": "Churrasco No Prato 250g", "preco": 30.00}, 
@@ -33,6 +54,11 @@ while True:
     except ValueError: 
         print("Entrada inválida. Por favor, digite um número ou 'sair'.") 
 
+def finalizar_app(): 
+    os.system('cls')
+    print("Obrigado por usar o aplicativo de pedidos do Sabor Brasileiro!\n") 
+    exit()
+
 # Resumo do pedido 
 if pedido: 
     print("\nResumo do seu pedido:") 
@@ -42,14 +68,14 @@ if pedido:
         total += item['preco'] 
     print(f"Total a pagar: R$ {total:.2f}") 
 else: 
-    print("Nenhum item foi adicionado ao pedido.") 
+    finalizar_app() 
 
 #metodo de pagamento 
 print("\nMétodos de pagamento disponíveis:") 
-print("1. Dinheiro") 
-print("2. Cartão de Crédito") 
-print("3. Cartão de Débito") 
-print("4. Pix") 
+metodoDePagamento = ["1. Dinheiro", "2. Cartão de Crédito", "3. Cartão de Débito", "4. Pix"]
+print('\n'.join(metodoDePagamento))
+
+
 metodo_pagamento = input("Escolha o método de pagamento (1, 2, 3 ou 4): ") 
 if metodo_pagamento == '1': 
     print("Você escolheu pagar em Dinheiro.") 
