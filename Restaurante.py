@@ -36,6 +36,16 @@ def mostrar_menu(menu, titulo):
     for codigo, item in menu.items():
         print(f"{codigo}. {item['nome']} - R$ {item['preco']:.2f}")
 
+def mostrar_resumo_pedido(pedido):
+    print(Fore.YELLOW + "===== Resumo do seu pedido =====")
+    total = 0
+    for item in pedido:
+        subtotal = item["preco"] * item["qtd"]
+        print(f"- {item['nome']} (x{item['qtd']}) - R$ {subtotal:.2f}")
+        total += subtotal
+    print(f"\nTotal parcial: R$ {total:.2f}")
+    return total
+
 def salvar_historico(cliente, telefone, pedido, total, entrega, endereco=None):
     with open("pedidos.txt", "a", encoding="utf-8") as f:
         f.write(f"Cliente: {cliente} | Telefone: {telefone}\n")
@@ -50,7 +60,7 @@ def salvar_historico(cliente, telefone, pedido, total, entrega, endereco=None):
 
 def finalizar_app():
     limpar()
-    print(Fore.CYAN + "Obrigado por usar o aplicativo de pedidos do Sabor Brasileiro!\n")
+    print(Fore.CYAN + f"Obrigado por usar o aplicativo de pedidos do {NomeDoRestaurante}!\n")
     exit()
 
 # ==============================
@@ -63,8 +73,8 @@ if acesso != 's':
 else:
     limpar()
 
-cliente = input("Digite seu nome: ")
-telefone = input("Digite seu telefone: ")
+cliente = input("Digite seu nome: ").strip()
+telefone = input("Digite seu telefone: ").strip()
 print(Fore.GREEN + f"\nBem-vindo, {cliente}! Seu número ({telefone}) será usado para contato.\n")
 
 # ==============================
@@ -97,14 +107,18 @@ while True:
         continue
 
     while True:
-        escolha = input("\nDigite o código do produto para adicionar (ou 'voltar' para menu principal): ")
+        escolha = input("\nDigite o código do produto para adicionar (ou 'voltar' para menu principal): ").strip().upper()
         if escolha.lower() == "voltar":
             limpar()
             break
         try:
             codigo = int(escolha)
             if codigo in menu_atual:
-                quantidade = int(input("Digite a quantidade: "))
+                quantidade = input("Digite a quantidade: ").strip()
+                if not quantidade.isdigit() or int(quantidade) <= 0:
+                    print(Fore.RED + "Quantidade inválida. Digite um número inteiro positivo.")
+                    continue
+                quantidade = int(quantidade)
                 pedido.append({"nome": menu_atual[codigo]["nome"], "preco": menu_atual[codigo]["preco"], "qtd": quantidade})
                 print(Fore.GREEN + f"{menu_atual[codigo]['nome']} (x{quantidade}) adicionado ao pedido.")
             else:
@@ -115,32 +129,54 @@ while True:
 # ==============================
 # Resumo do pedido
 # ==============================
-if pedido:
-    limpar()
-    print(Fore.YELLOW + "===== Resumo do seu pedido =====")
-    total = 0
-    for item in pedido:
-        subtotal = item["preco"] * item["qtd"]
-        print(f"- {item['nome']} (x{item['qtd']}) - R$ {subtotal:.2f}")
-        total += subtotal
-    print(f"\nTotal parcial: R$ {total:.2f}")
-else:
+if not pedido:
     finalizar_app()
 
+limpar()
+total = mostrar_resumo_pedido(pedido)
+
 # ==============================
-# Remover item
+# Remover item com quantidade
 # ==============================
 remover = input("\nDeseja remover algum item do pedido? (s/n): ").strip().lower()
-if remover == "s":
+while remover == "s" and pedido:
     for i, item in enumerate(pedido, 1):
         print(f"{i}. {item['nome']} (x{item['qtd']}) - R$ {item['preco']*item['qtd']:.2f}")
     try:
-        excluir = int(input("Digite o número do item que deseja remover: "))
+        excluir = int(input("Digite o número do item que deseja remover: ").strip())
         if 1 <= excluir <= len(pedido):
-            excluido = pedido.pop(excluir - 1)
-            print(Fore.RED + f"{excluido['nome']} removido do pedido.")
+            item_selecionado = pedido[excluir - 1]
+            while True:
+                qtd_remover = input(f"Quantas unidades de '{item_selecionado['nome']}' deseja remover? (max {item_selecionado['qtd']}): ").strip()
+                if not qtd_remover.isdigit():
+                    print(Fore.RED + "Digite um número válido.")
+                    continue
+                qtd_remover = int(qtd_remover)
+                if 1 <= qtd_remover <= item_selecionado['qtd']:
+                    break
+                else:
+                    print(Fore.RED + f"Quantidade inválida. Digite um valor entre 1 e {item_selecionado['qtd']}.")
+            # Remove a quantidade solicitada
+            item_selecionado['qtd'] -= qtd_remover
+            print(Fore.RED + f"Removido {qtd_remover} unidade(s) de {item_selecionado['nome']}.")
+            # Se quantidade zerar, remove o item da lista
+            if item_selecionado['qtd'] == 0:
+                pedido.pop(excluir - 1)
+                print(Fore.RED + f"Item {item_selecionado['nome']} removido completamente do pedido.")
+            if pedido:
+                total = mostrar_resumo_pedido(pedido)
+            else:
+                print(Fore.RED + "Todos os itens foram removidos do pedido.")
+                print(Fore.CYAN + "Encerrando o aplicativo, pois não há itens no pedido.")
+                exit()
+        else:
+            print(Fore.RED + "Número inválido.")
     except ValueError:
         print(Fore.RED + "Entrada inválida.")
+    if pedido:
+        remover = input("\nDeseja remover outro item? (s/n): ").strip().lower()
+    else:
+        break
 
 # ==============================
 # Cupom de desconto
@@ -152,22 +188,29 @@ if cupom == "DESCONTO10":
 elif cupom == "DESCONTO20":
     total *= 0.8
     print(Fore.GREEN + "✅ Cupom aplicado! 20% de desconto.")
+elif cupom != "":
+    print(Fore.RED + "Cupom inválido. Nenhum desconto aplicado.")
 else:
-    print("Nenhum cupom válido aplicado.")
+    print("Nenhum cupom aplicado.")
 
 # ==============================
 # Entrega ou Retirada
 # ==============================
-print("\nOpções de recebimento:")
-print("1. Retirar no local")
-print("2. Entrega em casa")
-entrega = input("Escolha 1 ou 2: ").strip()
-endereco = None
-if entrega == "2":
-    endereco = input("Digite seu endereço: ")
-    print(Fore.CYAN + f"Seu pedido será entregue em: {endereco}")
-else:
-    print(Fore.CYAN + "Seu pedido estará pronto para retirada em 20 minutos.")
+while True:
+    print("\nOpções de recebimento:")
+    print("1. Retirar no local")
+    print("2. Entrega em casa")
+    entrega = input("Escolha 1 ou 2: ").strip()
+    if entrega == "1":
+        endereco = None
+        print(Fore.CYAN + "Seu pedido estará pronto para retirada em 20 minutos.")
+        break
+    elif entrega == "2":
+        endereco = input("Digite seu endereço: ").strip()
+        print(Fore.CYAN + f"Seu pedido será entregue em: {endereco}")
+        break
+    else:
+        print(Fore.RED + "Opção inválida. Por favor, escolha 1 ou 2.")
 
 # ==============================
 # Tempo estimado
@@ -184,7 +227,7 @@ print('\n'.join(metodoDePagamento))
 
 print(Fore.GREEN + f"\nTotal final a pagar: R$ {total:.2f}")
 
-metodo_pagamento = input("\nEscolha o método de pagamento (1, 2, 3 ou 4): ").strip()
+metodo_pagamento = input("\nEscolha o método de pagamento (1, 2, 3 ou 4): \n").strip()
 if metodo_pagamento == '1':
     print("Você escolheu pagar em Dinheiro.")
 elif metodo_pagamento == '2':
@@ -201,6 +244,5 @@ else:
 # ==============================
 salvar_historico(cliente, telefone, pedido, total, "Entrega" if entrega == "2" else "Retirada", endereco)
 
-
 print(Fore.CYAN + "\nUm garçom estará com você em breve para finalizar o pagamento.")
-print(Fore.CYAN + "\nObrigado por visitar o Sabor Brasileiro! Volte sempre!")
+print(Fore.CYAN + f"\nObrigado por visitar o {NomeDoRestaurante}! Volte sempre!")

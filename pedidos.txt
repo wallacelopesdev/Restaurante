@@ -6,3 +6,16 @@ Entrega: Entrega
 Endereço: Rua osvaldinho cruz 132
 ==============================
 
+Cliente: wally | Telefone: 2
+Itens do pedido:
+Total: R$ 60.00
+Entrega: Retirada
+==============================
+
+Cliente: wallace | Telefone: 991669695
+Itens do pedido:
+- Feijoada 500g (x2) - R$ 50.00
+Total: R$ 50.00
+Entrega: Retirada
+==============================
+
