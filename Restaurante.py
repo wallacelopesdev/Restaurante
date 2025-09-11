@@ -171,21 +171,21 @@ while remover == "s" and pedido:
         remover = input("\nDeseja remover outro item? (s/n): ").strip().lower()
     else:
         break
-
+os.system("cls")
 # Cupom de desconto
 
 cupom = input("\nDigite um cupom de desconto (ou Enter para continuar): ").strip().upper()
 if cupom == "DESCONTO10":
     total *= 0.9
-    print(Fore.GREEN + "✅ Cupom aplicado! 10% de desconto.")
+    print(Fore.GREEN + " Cupom aplicado! 10% de desconto.")
 elif cupom == "DESCONTO20":
     total *= 0.8
-    print(Fore.GREEN + "✅ Cupom aplicado! 20% de desconto.")
+    print(Fore.GREEN + " Cupom aplicado! 20% de desconto.")
 elif cupom != "":
     print(Fore.RED + "Cupom inválido. Nenhum desconto aplicado.")
 else:
     print("Nenhum cupom aplicado.")
-
+os.system("cls")
 # Entrega ou Retirada
 
 while True:
@@ -207,7 +207,7 @@ while True:
 # Tempo estimado
 
 tempo_estimado = 10 + len(pedido) * 5
-print(Fore.YELLOW + f"\n⏳ Seu pedido ficará pronto em aproximadamente {tempo_estimado} minutos.")
+print(Fore.YELLOW + f"\n Seu pedido ficará pronto em aproximadamente {tempo_estimado} minutos.")
 
 # Pagamento
 
@@ -232,7 +232,7 @@ else:
 # Salvar histórico
 
 salvar_historico(cliente, telefone, pedido, total, "Entrega" if entrega == "2" else "Retirada", endereco)
-
+os.system("cls")
 print(Fore.CYAN + "\nUm garçom estará com você em breve para finalizar o pagamento.")
 print(Fore.CYAN + f"\nObrigado por visitar o {NomeDoRestaurante}! Volte sempre!")
 
@@ -240,5 +240,8 @@ print(Fore.CYAN + f"\nObrigado por visitar o {NomeDoRestaurante}! Volte sempre!"
 
 ver_dashboard = input("\nDeseja ver o dashboard de arrecadação? (s/n): ").strip().lower()
 if ver_dashboard == 's':
+    salvar_historico == True
     dashboard_grafico()
+else:
+    finalizar_app()
 
