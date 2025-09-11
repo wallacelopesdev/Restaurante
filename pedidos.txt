@@ -19,3 +19,12 @@ Total: R$ 50.00
 Entrega: Retirada
 ==============================
 
+Cliente: Wallace | Telefone: 92039233
+Itens do pedido:
+- Feijoada 500g (x2) - R$ 50.00
+- Cerveja (x1) - R$ 11.00
+- Martini (x1) - R$ 16.00
+Total: R$ 77.00
+Entrega: Retirada
+==============================
+

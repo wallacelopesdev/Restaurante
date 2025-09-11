@@ -1,14 +1,14 @@
 import os
 from colorama import Fore, Style, init
+from dashboard import dashboard_grafico
 
-# Inicializa colorama (para Windows e Linux)
+# Inicializa o colorama
 init(autoreset=True)
 
-NomeDoRestaurante = "Sabor Brasileiro"
+NomeDoRestaurante = '𝓢𝓪𝓫𝓸𝓻 𝓑𝓻𝓪𝓼𝓲𝓵𝓮𝓲𝓻𝓸'
 
-# ==============================
 # Menus
-# ==============================
+
 menuDeComidas = {
     1: {"nome": "Feijoada 500g", "preco": 25.00},
     2: {"nome": "Churrasco No Prato 250g", "preco": 30.00},
@@ -24,10 +24,8 @@ menuDeBebidas = {
     4: {"nome": "Vinho", "preco": 32.00},
     5: {"nome": "Whisky", "preco": 45.00}
 }
-
-# ==============================
 # Funções
-# ==============================
+
 def limpar():
     os.system("cls" if os.name == "nt" else "clear")
 
@@ -63,9 +61,8 @@ def finalizar_app():
     print(Fore.CYAN + f"Obrigado por usar o aplicativo de pedidos do {NomeDoRestaurante}!\n")
     exit()
 
-# ==============================
 # Cadastro inicial
-# ==============================
+
 acesso = input("Você deseja acessar o aplicativo de pedidos do restaurante? (s/n): ").strip().lower()
 if acesso != 's':
     print("Obrigado! Volte sempre.")
@@ -77,9 +74,8 @@ cliente = input("Digite seu nome: ").strip()
 telefone = input("Digite seu telefone: ").strip()
 print(Fore.GREEN + f"\nBem-vindo, {cliente}! Seu número ({telefone}) será usado para contato.\n")
 
-# ==============================
 # Pedido
-# ==============================
+
 pedido = []
 
 while True:
@@ -126,18 +122,16 @@ while True:
         except ValueError:
             print(Fore.RED + "Entrada inválida. Digite um número ou 'voltar'.")
 
-# ==============================
 # Resumo do pedido
-# ==============================
+
 if not pedido:
     finalizar_app()
 
 limpar()
 total = mostrar_resumo_pedido(pedido)
 
-# ==============================
 # Remover item com quantidade
-# ==============================
+
 remover = input("\nDeseja remover algum item do pedido? (s/n): ").strip().lower()
 while remover == "s" and pedido:
     for i, item in enumerate(pedido, 1):
@@ -178,9 +172,8 @@ while remover == "s" and pedido:
     else:
         break
 
-# ==============================
 # Cupom de desconto
-# ==============================
+
 cupom = input("\nDigite um cupom de desconto (ou Enter para continuar): ").strip().upper()
 if cupom == "DESCONTO10":
     total *= 0.9
@@ -193,9 +186,8 @@ elif cupom != "":
 else:
     print("Nenhum cupom aplicado.")
 
-# ==============================
 # Entrega ou Retirada
-# ==============================
+
 while True:
     print("\nOpções de recebimento:")
     print("1. Retirar no local")
@@ -212,15 +204,13 @@ while True:
     else:
         print(Fore.RED + "Opção inválida. Por favor, escolha 1 ou 2.")
 
-# ==============================
 # Tempo estimado
-# ==============================
+
 tempo_estimado = 10 + len(pedido) * 5
 print(Fore.YELLOW + f"\n⏳ Seu pedido ficará pronto em aproximadamente {tempo_estimado} minutos.")
 
-# ==============================
 # Pagamento
-# ==============================
+
 print("\nMétodos de pagamento disponíveis:")
 metodoDePagamento = ["1. Dinheiro", "2. Cartão de Crédito", "3. Cartão de Débito", "4. Pix"]
 print('\n'.join(metodoDePagamento))
@@ -239,10 +229,16 @@ elif metodo_pagamento == '4':
 else:
     print(Fore.RED + "Método de pagamento inválido. Será definido no balcão.")
 
-# ==============================
 # Salvar histórico
-# ==============================
+
 salvar_historico(cliente, telefone, pedido, total, "Entrega" if entrega == "2" else "Retirada", endereco)
 
 print(Fore.CYAN + "\nUm garçom estará com você em breve para finalizar o pagamento.")
 print(Fore.CYAN + f"\nObrigado por visitar o {NomeDoRestaurante}! Volte sempre!")
+
+# Dashboard gráfico
+
+ver_dashboard = input("\nDeseja ver o dashboard de arrecadação? (s/n): ").strip().lower()
+if ver_dashboard == 's':
+    dashboard_grafico()
+
